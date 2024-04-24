@@ -112,12 +112,15 @@ class MainActivity : ComponentActivity() {
                     if (is_faild) {
                         Text(text = "!! ERROR !!\r\n"+"未能正确加载程序,请检查权限情况或尝试关掉后台重启程序.")
                     }else{
-                        Text(text = "Text Reader Android Edition  240422build -- Power By.IDlike\r\n" +
+                        Text(text = "Text Reader Android Edition  240424build -- Power By.IDlike\r\n" +
                                 "\n" +
                                 "   240422build 更新日志\n" +
                                 " 修复部分BUG\n" +
                                 " 新增插件和小说管理器 (原生)\n" +
                                 " [建议加入AE插件套件,其中包含多个实用功能和触屏特化设计UI]\n" +
+                                "   240424build 更新日志\n" +
+                                " 修复了一个闪退问题\n" +
+                                " 改进WebView体验\n" +
                                 "\n" +
                                 "阅读服务已经启动在本机上。 (port:"+ NormPort+")\r\n" +
                                 "共享服务已经启动在本机上。 (port:"+ com.teipreader.share.Config_dirs.NormPort+")"
