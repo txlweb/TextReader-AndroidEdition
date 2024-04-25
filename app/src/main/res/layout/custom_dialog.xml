@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/text_im"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="26dp" />
+
+    <TextView
+        android:id="@+id/tx_title"
+        android:layout_width="162dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="9dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/text_im"
+        app:layout_constraintTop_toBottomOf="@+id/tx_tl"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tx_tl"
+        android:layout_width="160dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="9dp"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/text_im"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteY="26dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

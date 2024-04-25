@@ -27,6 +27,7 @@ public class WebServer {
             e.printStackTrace();
         } finally {
             if (server != null) {
+                final_share = true;
                 try {
                     server.close();
                 } catch (IOException e) {

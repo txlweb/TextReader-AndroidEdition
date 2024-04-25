@@ -13,14 +13,13 @@ import android.provider.OpenableColumns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.documentfile.provider.DocumentFile;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.teipreader.Lib.IniLib;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -65,7 +64,14 @@ public class PluginMgrActivity extends AppCompatActivity {
         File[] files = directory.listFiles();
         if (files != null) {
             for (File file : files) {
-                fileList.add(new FileModel(file.getName(), file.length()));
+                String t_o = "UNKNOW";
+                if(new File(base_path+"/"+file.getName()+"/resource.ini").isFile()||new File(base_path+"/"+file.getName()+"/list.info").isFile()) {
+                    t_o = IniLib.GetThing(MainPath + "/" + file.getName() + "/resource.ini", "conf", "title");
+                }
+                if(!file.getName().contains(".encode")){
+                    fileList.add(new FileModel(file.getName(), t_o, file.length()));
+                }
+
             }
         }
 
@@ -77,6 +83,12 @@ public class PluginMgrActivity extends AppCompatActivity {
         btn_dis = findViewById(R.id.button3); // 禁用
         btn_ena = findViewById(R.id.button2); // 启用
         btn_imp = findViewById(R.id.button1); // 获取按钮的引用
+        findViewById(R.id.button5).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recreate();
+            }
+        });
         btn_del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

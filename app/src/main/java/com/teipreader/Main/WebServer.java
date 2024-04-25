@@ -46,6 +46,7 @@ public class WebServer extends Thread implements Main {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
+            final_server = true;
             if (server != null) {
                 try {
                     server.close();
@@ -343,7 +344,8 @@ class RequestHandler implements Runnable {
             } else {
                 if (IsSendData) {
                     if (Objects.equals(RET_HTML.toString(), "")) {
-                        sendText(out, "<h1>404 Error</h1>");
+                        //sendText(out, "<h1>404 Error</h1>");
+                        sendResponse(out, 404, "OK", "text/html", "".getBytes());
                         return;
                     } else {
                         sendText(out, RET_HTML.toString());

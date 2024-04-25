@@ -1,6 +1,7 @@
 package com.idsoft.textreader;
 
 import static com.idsoft.textreader.PluginMgrActivity.base_path;
+import static com.teipreader.Main.Config_dirs.MainPath;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.teipreader.Lib.IniLib;
 
 import java.io.File;
 import java.util.List;
@@ -53,6 +56,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                 holder.fileSizeTextView.setText("  (隐藏)");
             }else {
                 if(new File(base_path+"/"+file.getFileName()+"/resource.ini").isFile()||new File(base_path+"/"+file.getFileName()+"/list.info").isFile()){
+                    holder.fileNameTextView.setText(file.getFileName()+" 《"+file.getTitle_name()+"》");
                     holder.imageView.setImageResource(R.drawable.teip_doc);
                     if(new File(base_path+"/"+file.getFileName()+"/main.index").isFile()){
                         holder.fileSizeTextView.setText("  ( V2 )");

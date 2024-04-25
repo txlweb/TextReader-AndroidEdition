@@ -93,11 +93,7 @@ class MainActivity : ComponentActivity() {
         is_faild = unpk(filesDir.toString() + File.separator + "/style", "style.zip")
         //启动服务器
         val rootView = findViewById<View>(android.R.id.content)
-        Handler().postDelayed({
-                Snackbar.make(rootView, "作者推荐插件: AE插件套件(可以不加)", Snackbar.LENGTH_SHORT).setAction(
-                "加载") {
-                    unpk("$ex_path/plugins", "plugin.zip")
-                }.show() ; }, 1000)
+
         boot()
         var btn_num = 0
         super.onCreate(savedInstanceState)
@@ -159,18 +155,30 @@ class MainActivity : ComponentActivity() {
                     btn_num++
                     Button(
                     onClick = {
-                        PluginMgrActivity.mode_is_plugin = true;
-                        val intent = Intent()
-                        intent.setClass(this@MainActivity, PluginMgrActivity::class.java)
-                        startActivity(intent)
+                            Snackbar.make(rootView, "要为你的客户端添加推荐的插件吗? ", Snackbar.LENGTH_SHORT).setAction(
+                                "一键添加") {
+                                unpk("$ex_path/plugins", "plugin.zip")
+                            }.show()
                     },
                     modifier = Modifier
-                        .size(width = 300.dp, height = 50.dp)
-                        .offset(5.dp, (350 + btn_num * 54).dp)
+                        .size(width = 80.dp, height = 50.dp)
+                        .offset(260.dp, (350 + btn_num * 54).dp)
                     ) {
-                    Text(text = "管理插件")
+                    Text(text = "推荐")
                     }
-
+                    Button(
+                        onClick = {
+                            PluginMgrActivity.mode_is_plugin = true;
+                            val intent = Intent()
+                            intent.setClass(this@MainActivity, PluginMgrActivity::class.java)
+                            startActivity(intent)
+                        },
+                        modifier = Modifier
+                            .size(width = 250.dp, height = 50.dp)
+                            .offset(5.dp, (350 + btn_num * 54).dp)
+                    ) {
+                        Text(text = "管理插件")
+                    }
                     btn_num++
                     Button(
                         onClick = {
@@ -190,7 +198,8 @@ class MainActivity : ComponentActivity() {
                         onClick = {
                             final_server = true;
                             final_share = true;
-                            finish()
+                            finishAffinity(); // 结束当前任务的所有Activity
+                            System.exit(0); // 强制结束应用进程
 //                            Snackbar.make(rootView, "点错了?", Snackbar.LENGTH_SHORT).setAction(
 //                                "重启服务") {
 //                                final_server = false;
@@ -209,7 +218,8 @@ class MainActivity : ComponentActivity() {
                         onClick = {
                             final_server = true;
                             final_share = true;
-                            finish()
+                            finishAffinity(); // 结束当前任务的所有Activity
+                            System.exit(0); // 强制结束应用进程
                         },
                         modifier = Modifier
                             .size(width = 300.dp, height = 50.dp)
@@ -235,7 +245,7 @@ class MainActivity : ComponentActivity() {
             } }, 1)
 
     }
-    private fun unpk(out_path: String,res_name:String): Boolean {
+    public fun unpk(out_path: String,res_name:String): Boolean {
         val unzippedFilePath = "$out_path" // 解压目标完整路径
         File(filesDir.toString() + File.separator + "/"+res_name).delete()
         if (copyFileFromAssets(this, res_name,res_name)) {
@@ -372,4 +382,6 @@ class MainActivity : ComponentActivity() {
             // 处理旧版本Android的代码...
         }
     }
+
+
 }
