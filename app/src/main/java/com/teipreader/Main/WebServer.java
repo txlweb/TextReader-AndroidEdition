@@ -25,6 +25,7 @@ import static com.teipreader.LibTextParsing.TextReaderLibVa.*;
 import static com.teipreader.LibTextParsing.TextReaderLibVc.GetImg;
 import static com.teipreader.LibTextParsing.TextReaderLibVc.GetTitImg;
 import static com.teipreader.Main.Config_dirs.Fire_Wall;
+import static com.teipreader.Main.Config_dirs.in_storage;
 import static com.teipreader.Main.TeipMake.import_teip;
 
 public class WebServer extends Thread implements Main {
@@ -182,22 +183,22 @@ class RequestHandler implements Runnable {
             }
             if (path.contains("/api/mktxt/?")) {
                 String[] a = URLDecoder.decode(path, String.valueOf(StandardCharsets.UTF_8)).split("\\?");
-                TeipMake.autoMake(a[1], "tmp.zip", a[2], a[3], a[4], a[5], a[6]);
-                TeipMake.Unzip("tmp.zip", Config_dirs.MainPath);
+                TeipMake.autoMake(a[1], in_storage+"/tmp.zip", a[2], a[3], a[4], a[5], a[6]);
+                TeipMake.Unzip(in_storage+"/tmp.zip", Config_dirs.MainPath);
                 RET_HTML = new StringBuilder(String.format("Complete to import file. parameters:%s,%s,%s,%s,%s,%s", a[1], a[2], a[3], a[4], a[5], a[6]));
                 IsSendData = true;
             }
             if (path.contains("/api/mkpdf/?")) {
                 String[] a = URLDecoder.decode(path, String.valueOf(StandardCharsets.UTF_8)).split("\\?");
-                com.teipreader.LibTextParsing.CartoonMake.MakeCartoon_by_pdf(a[1], a[6], "tmp.zip", a[2], a[3], a[4], a[5]);
-                TeipMake.Unzip("tmp.zip", Config_dirs.MainPath);
+                com.teipreader.LibTextParsing.CartoonMake.MakeCartoon_by_pdf(a[1], a[6], in_storage+"/tmp.zip", a[2], a[3], a[4], a[5]);
+                TeipMake.Unzip(in_storage+"/tmp.zip", Config_dirs.MainPath);
                 RET_HTML = new StringBuilder(String.format("Complete to import file. parameters:%s,%s,%s,%s,%s,%s", a[1], a[2], a[3], a[4], a[5], a[6]));
                 IsSendData = true;
             }
             if (path.contains("/api/webReq/?url=")) {
                 String[] a = URLDecoder.decode(path, String.valueOf(StandardCharsets.UTF_8)).split("\\?url=");
-                Download.Dw_File(a[1], "tmp.json");
-                List<String> lines = ReadCFGFile("tmp.json");
+                Download.Dw_File(a[1], in_storage+"/tmp.json");
+                List<String> lines = ReadCFGFile(in_storage+"/tmp.json");
                 for (String line : lines) {
                     RET_HTML.append(line);
                 }
@@ -222,8 +223,8 @@ class RequestHandler implements Runnable {
             }
             if (path.contains("/api/web_dl/?")) {
                 String[] a = URLDecoder.decode(path, String.valueOf(StandardCharsets.UTF_8)).split("\\?=");
-                Download.Dw_File(a[1], "tmp.teip");
-                TeipMake.Unzip("tmp.teip", Config_dirs.MainPath);
+                Download.Dw_File(a[1], in_storage+"/tmp.teip");
+                TeipMake.Unzip(in_storage+"/tmp.teip", Config_dirs.MainPath);
                 RET_HTML = new StringBuilder("Complete to import file from URL" + a[1] + ".");
                 IsSendData = true;
             }
