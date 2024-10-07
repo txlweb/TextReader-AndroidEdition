@@ -18,6 +18,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 
+import static com.teipreader.Main.Config_dirs.in_storage;
 import static com.teipreader.Main.TeipMake.CopyFileToThis;
 
 import android.os.Build;
@@ -25,7 +26,8 @@ import android.os.Build;
 public class Download {
     public static boolean import_certificate(File JKS_FILE){
         try {
-            CopyFileToThis(JKS_FILE, new File("/certificate/" + JKS_FILE.getName()));
+            if(!new File(in_storage+"/certificate/").isDirectory())new File(in_storage+"/certificate/").mkdir();
+            CopyFileToThis(JKS_FILE, new File(in_storage+"/certificate/" + JKS_FILE.getName()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -45,7 +47,7 @@ public class Download {
             throw new RuntimeException(e);
         }
         //加载用户自定义证书
-        File file = new File("/certificate/");
+        File file = new File(in_storage+"/certificate/");
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             for (File value : files) {

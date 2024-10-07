@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationCompat
+import androidx.core.content.FileProvider
 import com.google.android.material.snackbar.Snackbar
 import com.idsoft.textreader.FileUtils.copyFileFromAssets
 import com.idsoft.textreader.FileUtils.unzipFile
@@ -33,6 +34,8 @@ import com.idsoft.textreader.ui.theme.TextReaderTheme
 import com.teipreader.Main.Config_dirs.MainPath
 import com.teipreader.Main.Config_dirs.NormPort
 import com.teipreader.Main.Main.boot
+import com.teipreader.Main.TeipMake.CopyFileToThis
+import com.teipreader.Main.TeipMake.WriteFileToThis
 import com.teipreader.Main.WebServer.crash_cheek
 import com.teipreader.Main.WebServer.final_server
 import com.teipreader.share.WebServer.final_share
@@ -91,6 +94,32 @@ class MainActivity : ComponentActivity() {
 //            is_faild = true;
 //        }
         is_faild = unpk(filesDir.toString() + File.separator + "/style", "style.zip")
+        //复制配置文件
+        File(filesDir.toString() + File.separator  + "/configs/").mkdir()
+        if (File(filesDir.toString() + File.separator  + "/configs/API_list.json").isFile) {
+           CopyFileToThis(
+                File(filesDir.toString() + File.separator +"/configs/API_list.json"),
+                File(filesDir.toString() + File.separator +"/style/API_list.json")
+            )
+        }else{
+            File("$ex_path/configs/").mkdir()
+            CopyFileToThis(
+                File(filesDir.toString() + File.separator +"/style/API_list.json"),
+                File("$ex_path/configs/API_list.json")
+            )
+        }
+        if (File(ex_path + "/configs/config.json").isFile) {
+            CopyFileToThis(
+                File("$ex_path/configs/config.json"),
+                File(filesDir.toString() + File.separator +"/style/config.json")
+            )
+        }else{
+            File("$ex_path/configs/").mkdir()
+            CopyFileToThis(
+                File(filesDir.toString() + File.separator +"/style/config.json"),
+                File("$ex_path/configs/config.json")
+            )
+        }
         //启动服务器
         val rootView = findViewById<View>(android.R.id.content)
 
@@ -100,6 +129,8 @@ class MainActivity : ComponentActivity() {
         if(!is_faild){
             keep_life()
         }
+
+
         setContent {
             TextReaderTheme {
                 // A surface container using the 'background' color from the theme
@@ -123,7 +154,21 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 }
-
+                Thread{
+                    Thread.sleep(3000)
+                    if(isAppInstalled("com.idlike.ttssupport")){
+                        Snackbar.make(rootView, "检测到TTS SUPPORT模块,是否使用它作为朗读引擎?(替换config.json,之后重启应用)", Snackbar.LENGTH_SHORT).setAction(
+                            "是") {
+                            WriteFileToThis(
+                                "$ex_path/configs/config.json",
+                                "{\"code\":\"0\",\"conf_tags\":[{\"name\":\"全部书\",\"key\":\"\"},{\"name\":\"显示隐藏书\",\"key\":\"VH\"}],\"conf_AI\":{\"AI_help\":\"目前不支持post类的请求方法,这个地址可以填远程的地址,不填不能用AI朗读\",\"API_URL_L\":\"http://127.0.0.1:8088/api?1.0?\",\"API_URL_R\":\"\"}}"
+                            )
+                            finish();
+                        }.show()
+                        println("sl")
+                    }
+                    println("el")
+                }.start()
                 if(!is_faild) {
                     Button(
                         onClick = {
@@ -212,6 +257,38 @@ class MainActivity : ComponentActivity() {
                             .offset(5.dp, (350 + btn_num * 54).dp)
                     ) {
                         Text(text = "关闭服务并退出")
+                    }
+                    btn_num++
+                    Button(
+                        onClick = {
+                            File(ex_path + "/configs/config.json").delete()
+                            File(ex_path + "/configs/config.json").createNewFile()
+                            var ot:FileOutputStream  = FileOutputStream(ex_path + "/configs/config.json")
+                            ot.write("{\"code\":\"0\",\"conf_tags\":[{\"name\":\"全部书\",\"key\":\"\"},{\"name\":\"显示隐藏书\",\"key\":\"VH\"}],\"conf_AI\":{\"AI_help\":\"目前不支持post类的请求方法,这个地址可以填远程的地址,不填不能用AI朗读\",\"API_URL_L\":\"http://127.0.0.1:8088/api?1.0?\",\"API_URL_R\":\"\"}}".toByteArray())
+                            ot.close()
+                        },
+                        modifier = Modifier
+                            .size(width = 300.dp, height = 50.dp)
+                            .offset(5.dp, (350 + btn_num * 54).dp)
+                    ) {
+                        Text("启用本地TTS")
+                    }
+                    btn_num++
+                    Button(
+                        onClick = {
+
+                            val file = File(ex_path + "/configs/config.json")
+                            val uri = FileProvider.getUriForFile(this, "${this.packageName}.provider", file)
+                            val intent = Intent(Intent.ACTION_VIEW)
+                            intent.setDataAndType(uri, "text/plain")
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            this.startActivity(intent)
+                        },
+                        modifier = Modifier
+                            .size(width = 300.dp, height = 50.dp)
+                            .offset(5.dp, (350 + btn_num * 54).dp)
+                    ) {
+                        Text("编辑setting.json")
                     }
                 }else{
                     Button(
@@ -383,5 +460,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-
+    private fun isAppInstalled(packageName: String): Boolean {
+        val pm = packageManager
+        return try {
+            pm.getPackageInfo(packageName, PackageManager.GET_META_DATA)
+            true // 包名存在，应用已安装
+        } catch (e: PackageManager.NameNotFoundException) {
+            false // 包名不存在，应用未安装
+        }
+    }
 }

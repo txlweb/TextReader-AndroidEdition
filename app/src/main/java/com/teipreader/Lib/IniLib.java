@@ -12,6 +12,8 @@ import java.util.List;
 
 import static com.teipreader.LibTextParsing.TextReaderLibVa.ReadCFGFile;
 
+import android.os.Build;
+
 
 public class IniLib {
     public static boolean lastLineisCRLF(String filename) {
@@ -38,7 +40,9 @@ public class IniLib {
         //如果文件尾部没有换行符,就要添加,否则会报错!!!!
         try {
             if (!lastLineisCRLF(FileName))
-                Files.write(Paths.get(FileName), "\r\n".getBytes(), StandardOpenOption.APPEND);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Files.write(Paths.get(FileName), "\r\n".getBytes(), StandardOpenOption.APPEND);
+                }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

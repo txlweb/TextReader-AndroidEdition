@@ -65,13 +65,13 @@ public class WebServer extends Thread implements Main {
 
 
     @Override
-    public void runShare() throws IOException {
+    public void runShare(){
         StartServer();
     }
 
 
     @Override
-    public void runServer() throws IOException {
+    public void runServer(){
         StartServer();
     }
 }
@@ -148,7 +148,7 @@ class RequestHandler implements Runnable {
             if (path.contains("/list.html")) {
                 String[] a = path.split("/");
                 RET_HTML = new StringBuilder("<h1 id=\"title\">章节目录</h1>");
-                String xx = "";
+                String xx;
                 if (IsFile(Config_dirs.MainPath + "/" + URLDecoder.decode(a[1], String.valueOf(StandardCharsets.UTF_8)) + "/resource.ini")) {
                     xx = IniLib.GetThing(Config_dirs.MainPath + "/" + URLDecoder.decode(a[1], String.valueOf(StandardCharsets.UTF_8)) + "/resource.ini", "conf", "title");
                 } else {
@@ -376,14 +376,6 @@ class RequestHandler implements Runnable {
         sendResponse(out, 200, "OK", "text/html", data);
     }
 
-    private void sendError(OutputStream out, int statusCode, String statusText) throws IOException {
-        String contentType = "text/html";
-        String content = "<html><head><title>" + statusCode + " " + statusText + "</title></head><body><h1>"
-                + statusCode + " " + statusText + "</h1></body></html>";
-        byte[] data = content.getBytes();
-        sendResponse(out, statusCode, statusText, contentType, data);
-    }
-
     private void sendResponse(OutputStream out, int statusCode, String statusText, String contentType, byte[] data)
             throws IOException {
         String statusLine = "HTTP/1.1 " + statusCode + " " + statusText + "\r\n";
@@ -415,7 +407,7 @@ class RequestHandler implements Runnable {
     private byte[] readBytes(File file) throws IOException {
         byte[] buffer = new byte[(int) file.length()];
         try (FileInputStream input = new FileInputStream(file)) {
-            input.read(buffer);
+            if(input.read(buffer)<=0) return "".getBytes();
         }
         return buffer;
     }
